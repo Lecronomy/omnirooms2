@@ -1,2 +1,2 @@
-# omnirooms2
-A chat app with infinite rooms (second attempt)
+# Omnirooms
+A chat app with infinite rooms (second attempt). WIP
