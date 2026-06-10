@@ -6,4 +6,13 @@ services:
       - ./server:/app
     ports:
       - "8000:8000"
+
+  client:
+    build: ./client
+    restart: unless-stopped
+    volumes:
+      - ./client:/app
+      - /app/node_modules # Mask node_modules to prevent conflicts between host and container
+    ports:
+      - "5173:5173"
       
