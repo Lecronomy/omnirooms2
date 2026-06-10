@@ -1,0 +1,9 @@
+services:
+  server:
+    build: ./server
+    restart: unless-stopped
+    volumes:
+      - ./server:/app
+    ports:
+      - "8000:8000"
+      
