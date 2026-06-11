@@ -1,9 +1,3 @@
-import { Hono } from 'hono'
+import app from "./src/app.ts";
 
-const app = new Hono()
-
-app.get('/', (c) => {
-  return c.text('Hello Hono!')
-})
-
-Deno.serve(app.fetch)
+Deno.serve(app.fetch);
