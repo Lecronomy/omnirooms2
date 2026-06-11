@@ -2,11 +2,15 @@
   "version": "5",
   "specifiers": {
     "jsr:@hono/hono@^4.12.24": "4.12.24",
+    "jsr:@zod/zod@^4.4.3": "4.4.3",
     "npm:postgres@^3.4.9": "3.4.9"
   },
   "jsr": {
     "@hono/hono@4.12.24": {
       "integrity": "a74a40f06ae6704ddd0e8e576f6da9d34666c3e1e0f5412a2c1ff800ffd092f4"
+    },
+    "@zod/zod@4.4.3": {
+      "integrity": "4712ac0967efaa718b37c36eaffb4e1d4457e1a266aef6efb3ab36f54a6fefe4"
     }
   },
   "npm": {
@@ -17,6 +21,7 @@
   "workspace": {
     "dependencies": [
       "jsr:@hono/hono@^4.12.24",
+      "jsr:@zod/zod@^4.4.3",
       "npm:postgres@^3.4.9"
     ]
   }
