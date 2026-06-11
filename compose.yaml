@@ -15,4 +15,11 @@ services:
       - /app/node_modules # Mask node_modules to prevent conflicts between host and container
     ports:
       - "5173:5173"
+
+  database:
+    container_name: postgresql_database
+    image: postgres:18
+    restart: unless-stopped
+    env_file:
+      - project.env
       
