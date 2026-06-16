@@ -14,6 +14,6 @@
 	<ORHeader />
 </header>
 
-<main class="mx-auto w-full max-w-2xl p-4">
+<main class="mx-auto w-full p-4">
 	{@render children()}
 </main>
