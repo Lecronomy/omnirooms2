@@ -4,11 +4,11 @@
 </script>
 
 <AppBar>
-	<AppBar.Toolbar class="grid-cols-[1fr_2fr_1fr]">
+	<AppBar.Toolbar class="grid-cols-[auto_1fr_auto]">
 		<AppBar.Lead>
 			<button type="button" class="btn-icon btn-icon-lg hover:preset-tonal"><MenuIcon /></button>
 		</AppBar.Lead>
-		<AppBar.Headline class="flex justify-center">
+		<AppBar.Headline>
 			<p class="text-2xl">Omnirooms</p>
 		</AppBar.Headline>
 		<AppBar.Trail class="justify-end">
