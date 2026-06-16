@@ -10,6 +10,10 @@
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
-<ORHeader />
+<header>
+	<ORHeader />
+</header>
 
-{@render children()}
+<main class="mx-auto w-full max-w-2xl p-4">
+	{@render children()}
+</main>
