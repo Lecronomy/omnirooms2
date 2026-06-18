@@ -19,5 +19,5 @@
 	// the generated config; see https://svelte.dev/docs/kit/configuration#typescript
 
 	// Fix "large amount of files" warning
-	"exclude": ["node_modules", ".svelte-kit", "dist"]
+	"exclude": ["node_modules", "dist"]
 }

@@ -1,9 +1,12 @@
 <!-- Based on the example at https://www.skeleton.dev/docs/svelte/guides/cookbook/chat -->
+<!-- This could maybe be split into components if I figure out how -->
 
 <script lang="ts">
 	import { SendIcon } from '@lucide/svelte';
 	import { onMount } from 'svelte';
     import { page } from '$app/state';
+
+	import { PUBLIC_API_URL } from "$env/static/public";
 
 	interface MessageFeed {
 		id: number;
@@ -13,60 +16,61 @@
 	}
 
 	let elemChat: HTMLElement;
-	const lorem =
-		'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Provident blanditiis quidem dolorum ab similique. Voluptatibus quibusdam unde mollitia corrupti assumenda libero. Quibusdam culpa illum unde asperiores accusantium! Unde, cupiditate tenetur.';
 
 	// Messages
-	let messageFeed: MessageFeed[] = $state([
-		{
-			id: 0,
-			name: 'Jane',
-			timestamp: 'Yesterday @ 2:30pm',
-			message: lorem,
-		},
-		{
-			id: 1,
-			name: 'Michael',
-			timestamp: 'Yesterday @ 2:45pm',
-			message: lorem,
-		},
-		{
-			id: 2,
-			name: 'Jane',
-			timestamp: 'Yesterday @ 2:50pm',
-			message: lorem,
-		},
-		{
-			id: 3,
-			name: 'Michael',
-			timestamp: 'Yesterday @ 2:52pm',
-			message: lorem,
-		},
-	]);
+	let messageFeed: MessageFeed[] = $state([]);
 	let currentMessage = $state('');
+
+	// WebSocket connection
+	let connection: WebSocket;
+
+	const reconnect = () => {
+		setTimeout(() => {
+			connection.close();
+			openConnection();
+		}, 500);
+	}
+
+	const openConnection = async () => {
+		connection = new WebSocket(`${PUBLIC_API_URL}/room/${page.params.roomName}/ws`);
+
+		connection.onmessage = (event) => {
+			// Parse incoming message and add to feed
+			const data = JSON.parse(event.data);
+			const newMessage = {
+				id: messageFeed.length,
+				name: data.user,
+				timestamp: data.date.toString(),
+				message: data.message,
+			};
+			// Update the message feed
+			messageFeed = [...messageFeed, newMessage];
+			// Smooth scroll to bottom
+			// Timeout prevents race condition (at least in the original example, does it in this version?)
+			setTimeout(() => scrollChatBottom('smooth'), 0);
+		};
+
+		connection.onclose = (event) => {
+			console.log('WebSocket connection closed', event);
+			reconnect();
+		};
+
+		connection.onerror = (error) => {
+			console.error('WebSocket error', error);
+			reconnect();
+		};
+	}
 
 	function scrollChatBottom(behavior?: 'auto' | 'instant' | 'smooth') {
 		elemChat.scrollTo({ top: elemChat.scrollHeight, behavior });
 	}
 
-	function getCurrentTimestamp(): string {
-		return new Date().toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
-	}
-
 	function addMessage() {
-		const newMessage = {
-			id: messageFeed.length,
-			name: 'Jane',
-			timestamp: `Today @ ${getCurrentTimestamp()}`,
-			message: currentMessage,
-		};
-		// Update the message feed
-		messageFeed = [...messageFeed, newMessage];
+		if (currentMessage.trim() === '') return;
+		// Send message through WebSocket
+		connection.send(JSON.stringify({ message: currentMessage }));
 		// Clear prompt
 		currentMessage = '';
-		// Smooth scroll to bottom
-		// Timeout prevents race condition
-		setTimeout(() => scrollChatBottom('smooth'), 0);
 	}
 
 	function onPromptKeydown(event: KeyboardEvent) {
@@ -76,9 +80,9 @@
 		}
 	}
 
-	// When DOM is mounted, scroll to bottom
+	// When DOM is mounted, establish WebSocket connection
 	onMount(() => {
-		scrollChatBottom();
+		openConnection();
 	});
 </script>
 
