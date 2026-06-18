@@ -35,12 +35,16 @@
 		connection = new WebSocket(`${PUBLIC_API_URL}/room/${page.params.roomName}/ws`);
 
 		connection.onmessage = (event) => {
-			// Parse incoming message and add to feed
+			// Parse incoming message
 			const data = JSON.parse(event.data);
+			// Turn timestamp into string
+			const date: Date = data.date instanceof Date ? data.date : new Date(data.date);
+			// TODO: This is currently hardcoded to en-US, change to use user's locale
+			const timestampString = date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
 			const newMessage = {
 				id: messageFeed.length,
 				name: data.user,
-				timestamp: data.date.toString(),
+				timestamp: timestampString,
 				message: data.message,
 			};
 			// Update the message feed
