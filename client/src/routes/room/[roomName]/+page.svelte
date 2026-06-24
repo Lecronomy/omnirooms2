@@ -6,64 +6,12 @@
 	import { onMount } from 'svelte';
     import { page } from '$app/state';
 
-	import { PUBLIC_API_URL } from "$env/static/public";
-
-	interface MessageFeed {
-		id: number;
-		name: string;
-		timestamp: string;
-		message: string;
-	}
+	import { useMessageFeed, openConnection } from '$lib/states/messageFeed.svelte';
 
 	let elemChat: HTMLElement;
-
-	// Messages
-	let messageFeed: MessageFeed[] = $state([]);
 	let currentMessage = $state('');
 
-	// WebSocket connection
-	let connection: WebSocket;
-
-	const reconnect = () => {
-		setTimeout(() => {
-			connection.close();
-			openConnection();
-		}, 500);
-	}
-
-	const openConnection = async () => {
-		connection = new WebSocket(`${PUBLIC_API_URL}/room/${page.params.roomName}/ws`);
-
-		connection.onmessage = (event) => {
-			// Parse incoming message
-			const data = JSON.parse(event.data);
-			// Turn timestamp into string
-			const date: Date = data.date instanceof Date ? data.date : new Date(data.date);
-			// TODO: This is currently hardcoded to en-US, change to use user's locale
-			const timestampString = date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
-			const newMessage = {
-				id: messageFeed.length,
-				name: data.user,
-				timestamp: timestampString,
-				message: data.message,
-			};
-			// Update the message feed
-			messageFeed = [...messageFeed, newMessage];
-			// Smooth scroll to bottom
-			// Timeout prevents race condition (at least in the original example, does it in this version?)
-			setTimeout(() => scrollChatBottom('smooth'), 0);
-		};
-
-		connection.onclose = (event) => {
-			console.log('WebSocket connection closed', event);
-			reconnect();
-		};
-
-		connection.onerror = (error) => {
-			console.error('WebSocket error', error);
-			reconnect();
-		};
-	}
+	const messageFeed = useMessageFeed();
 
 	function scrollChatBottom(behavior?: 'auto' | 'instant' | 'smooth') {
 		elemChat.scrollTo({ top: elemChat.scrollHeight, behavior });
@@ -72,7 +20,7 @@
 	function addMessage() {
 		if (currentMessage.trim() === '') return;
 		// Send message through WebSocket
-		connection.send(JSON.stringify({ message: currentMessage }));
+		messageFeed.sendMessage(currentMessage);
 		// Clear prompt
 		currentMessage = '';
 	}
@@ -84,9 +32,20 @@
 		}
 	}
 
+	// Scroll to bottom when message feed changes
+	$effect(() => {
+		// Subscribe to changes in the message feed
+		void messageFeed.messages;
+		// Smooth scroll to bottom
+		// Timeout prevents race condition (at least in the original example, does it in this version?)
+		setTimeout(() => scrollChatBottom('smooth'), 0);
+	});
+
 	// When DOM is mounted, establish WebSocket connection
 	onMount(() => {
-		openConnection();
+		if (page.params.roomName) {
+			openConnection(page.params.roomName);
+		}
 	});
 </script>
 
@@ -110,7 +69,7 @@
 		<div class="grid grid-rows-[1fr_auto]">
 			<!-- Conversation -->
 			<section bind:this={elemChat} class="max-h-125 p-4 overflow-y-auto space-y-4">
-				{#each messageFeed as bubble (bubble.id)}
+				{#each messageFeed.messages as bubble (bubble.id)}
                     <div class="grid grid-cols-[auto_1fr] gap-2">
                         <!-- <Avatar src="https://i.pravatar.cc/?img={bubble.avatar}" name={bubble.name} size="size-12" /> -->
                         <div class="card p-4 preset-tonal rounded-tl-none space-y-2">
