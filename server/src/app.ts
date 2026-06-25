@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 
-import { router as roomRouter } from "./services/room/routes.ts";
+import { authRouter } from "./services/auth/routes.ts";
+import { roomRouter } from "./services/room/routes.ts";
 
 const app = new Hono().basePath("/api");
 
@@ -10,6 +11,7 @@ app.get("/health", (c) => {
 });
 
 // Services
+app.route("/auth", authRouter);
 app.route("/room", roomRouter);
 
 export default app;

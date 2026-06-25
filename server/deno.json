@@ -1,8 +1,10 @@
 {
   "imports": {
-    "@zod/zod": "jsr:@zod/zod@^4.4.3",
+    "@denorg/scrypt": "jsr:@denorg/scrypt@^4.4.4",
+    "@hono/zod-validator": "jsr:@hono/zod-validator@^0.8.0",
     "hono": "jsr:@hono/hono@^4.12.24",
-    "postgres": "npm:postgres@^3.4.9"
+    "postgres": "npm:postgres@^3.4.9",
+    "zod": "npm:zod@^4.4.3"
   },
   "tasks": {
     "start": "deno run --allow-net main.ts"

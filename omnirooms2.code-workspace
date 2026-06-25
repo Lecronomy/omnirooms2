@@ -5,6 +5,9 @@
 		},
 		{
 			"path": "server"
+		},
+		{
+			"path": "database-migrations"
 		}
 	],
 	"settings": {

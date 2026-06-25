@@ -1,28 +1,74 @@
 {
   "version": "5",
   "specifiers": {
-    "jsr:@hono/hono@^4.12.24": "4.12.24",
-    "jsr:@zod/zod@^4.4.3": "4.4.3",
-    "npm:postgres@^3.4.9": "3.4.9"
+    "jsr:@denorg/scrypt@^4.4.4": "4.4.4",
+    "jsr:@hono/hono@^4.12.24": "4.12.27",
+    "jsr:@hono/hono@^4.8.3": "4.12.27",
+    "jsr:@hono/zod-validator@0.8": "0.8.0",
+    "jsr:@std/assert@0.222.1": "0.222.1",
+    "jsr:@std/assert@~0.222.1": "0.222.1",
+    "jsr:@std/crypto@0.222.1": "0.222.1",
+    "jsr:@std/encoding@0.222.1": "0.222.1",
+    "jsr:@std/encoding@~0.222.1": "0.222.1",
+    "jsr:@std/fmt@~0.222.1": "0.222.1",
+    "npm:postgres@^3.4.9": "3.4.9",
+    "npm:zod@^4.2.1": "4.4.3",
+    "npm:zod@^4.4.3": "4.4.3"
   },
   "jsr": {
-    "@hono/hono@4.12.24": {
-      "integrity": "a74a40f06ae6704ddd0e8e576f6da9d34666c3e1e0f5412a2c1ff800ffd092f4"
+    "@denorg/scrypt@4.4.4": {
+      "integrity": "81e82ad4627e91f4c98c1789b3382667f366a61702642ad5d3a8dddf7b444905",
+      "dependencies": [
+        "jsr:@std/assert@0.222.1",
+        "jsr:@std/crypto",
+        "jsr:@std/encoding@0.222.1"
+      ]
     },
-    "@zod/zod@4.4.3": {
-      "integrity": "4712ac0967efaa718b37c36eaffb4e1d4457e1a266aef6efb3ab36f54a6fefe4"
+    "@hono/hono@4.12.27": {
+      "integrity": "3acc640592008e43f7048e8e53275203e0da84fbcd50201121195da7560583dc"
+    },
+    "@hono/zod-validator@0.8.0": {
+      "integrity": "0ed9cdc57055b44c2fc9a031350122b90cede88c7dcec49162701ddfb27c7aa7",
+      "dependencies": [
+        "jsr:@hono/hono@^4.8.3",
+        "npm:zod@^4.2.1"
+      ]
+    },
+    "@std/assert@0.222.1": {
+      "integrity": "691637161ee584a9919d1f9950ddd1272feb8e0a19e83aa5b7563cedaf73d74c",
+      "dependencies": [
+        "jsr:@std/fmt"
+      ]
+    },
+    "@std/crypto@0.222.1": {
+      "integrity": "d5b9e6c704fadbcc384cd42c0b603ad4aea710ece0ff26426602681b64fd237c",
+      "dependencies": [
+        "jsr:@std/assert@~0.222.1",
+        "jsr:@std/encoding@~0.222.1"
+      ]
+    },
+    "@std/encoding@0.222.1": {
+      "integrity": "fb6c1d38722feebc8d4a5efa3eb2039ecec0d50d053186240484d0c4a4ce1006"
+    },
+    "@std/fmt@0.222.1": {
+      "integrity": "ec3382f9b0261c1ab1a5c804aa355d816515fa984cdd827ed32edfb187c0a722"
     }
   },
   "npm": {
     "postgres@3.4.9": {
       "integrity": "sha512-GD3qdB0x1z9xgFI6cdRD6xu2Sp2WCOEoe3mtnyB5Ee0XrrL5Pe+e4CCnJrRMnL1zYtRDZmQQVbvOttLnKDLnaw=="
+    },
+    "zod@4.4.3": {
+      "integrity": "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="
     }
   },
   "workspace": {
     "dependencies": [
+      "jsr:@denorg/scrypt@^4.4.4",
       "jsr:@hono/hono@^4.12.24",
-      "jsr:@zod/zod@^4.4.3",
-      "npm:postgres@^3.4.9"
+      "jsr:@hono/zod-validator@0.8",
+      "npm:postgres@^3.4.9",
+      "npm:zod@^4.4.3"
     ]
   }
 }

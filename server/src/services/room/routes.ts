@@ -5,10 +5,10 @@ import { WSContext } from "hono/ws";
 const rooms = new Map<string, Set<WSContext>>();
 const socketUsers = new Map<WSContext, string>(); // Replace string with actual user type when available
 
-const router = new Hono();
+const roomRouter = new Hono();
 
 // Some of this could maybe be moved to a separate service file if it gets more complex, but for now it's simple enough to keep here
-router.get(
+roomRouter.get(
   "/:roomName/ws",
   upgradeWebSocket((c) => {
     const roomName = c.req.param("roomName");
@@ -74,4 +74,4 @@ router.get(
   }),
 );
 
-export { router };
+export { roomRouter };

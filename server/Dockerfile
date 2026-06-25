@@ -8,4 +8,4 @@ RUN deno install
 
 COPY . .
 
-CMD ["run", "--allow-env", "--allow-net", "--watch", "main.ts"]
+CMD ["run", "--allow-env", "--allow-net", "--watch", "--env-file=.env.development", "main.ts"]
