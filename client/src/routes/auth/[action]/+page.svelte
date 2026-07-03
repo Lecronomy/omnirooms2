@@ -2,7 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
-	import { useAuthState } from '$lib/states/authState.svelte.js';
+	import { useAuthState } from '$lib/states/authState.svelte';
 
 	let message = $state('');
 	let errorMessage = $state('');
