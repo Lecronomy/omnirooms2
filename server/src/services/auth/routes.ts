@@ -5,6 +5,7 @@ import { hash, verify } from "@denorg/scrypt";
 
 import * as authSchemas from "./schemas.ts";
 import * as authRepository from "./repository.ts";
+import { JWT_ALGORITHM } from "../../constants.ts";
 
 const jwtSecret = Deno.env.get("JWT_SECRET");
 
@@ -52,7 +53,7 @@ authRouter.post(
     if (!jwtSecret) {
       return c.json({ error: "JWT secret is not set" }, 500);
     }
-    const token = await jwt.sign(userInfo, jwtSecret);
+    const token = await jwt.sign(userInfo, jwtSecret, JWT_ALGORITHM);
 
     return c.json({
       user: userInfo,
