@@ -2,12 +2,14 @@ import { Hono } from "hono";
 import { upgradeWebSocket } from "hono/deno";
 import { WSContext } from "hono/ws";
 
+import { verifyToken } from "./utils.ts";
+
 const rooms = new Map<string, Set<WSContext>>();
-const socketUsers = new Map<WSContext, string>(); // Replace string with actual user type when available
+const socketUsers = new Map<WSContext, string>(); // Replace string with actual user type when available if needed
 
 const roomRouter = new Hono();
 
-// Some of this could maybe be moved to a separate service file if it gets more complex, but for now it's simple enough to keep here
+// WebSockets engine for room communication
 roomRouter.get(
   "/:roomName/ws",
   upgradeWebSocket((c) => {
@@ -25,32 +27,50 @@ roomRouter.get(
           rooms.set(roomName, new Set());
         }
         rooms.get(roomName)?.add(ws);
-
-        // TODO: Use actual user info when available
-        // For now, just assign a random username for demonstration purposes
-        const username = `User${Math.floor(Math.random() * 1000)}`;
-        socketUsers.set(ws, username);
       },
-      onMessage: (event, ws) => {
-        if (!roomName) {
-          // Invalid room name, ignore the message
+      onMessage: async (event, ws) => {
+        if (!roomName || typeof event.data !== "string") {
+          // Only accept text messages and valid room names
           return;
         }
 
-        if (typeof event.data !== "string") {
-          // Only handle text messages for now
-          return;
-        }
-
+        // Parse the incoming message
         const message = JSON.parse(event.data);
-        message.user = socketUsers.get(ws) || "Unknown User";
-        message.date = Date.now();
 
-        // Broadcast the message to all clients in the room
-        const roomSockets = rooms.get(roomName);
-        if (roomSockets) {
-          for (const socket of roomSockets) {
-            socket.send(JSON.stringify(message));
+        if (message.type === "auth") {
+          // Handle authentication message
+
+          const token = message.token;
+          if (!token) {
+            ws.send(JSON.stringify({ error: "No token provided" }));
+            return;
+          }
+
+          try {
+            const payload = await verifyToken(token);
+            socketUsers.set(ws, payload.username as string); // Assuming the payload has a username field
+          } catch (_error) {
+            // TODO: Handle error
+            return;
+          }
+        } else {
+          // Handle non-auth messages (assumed to be chat messages)
+
+          const username = socketUsers.get(ws);
+          if (!username) {
+            // If the user is not authenticated, ignore the message
+            return;
+          }
+
+          message.user = username;
+          message.date = Date.now();
+
+          // Broadcast the message to all clients in the room
+          const roomSockets = rooms.get(roomName);
+          if (roomSockets) {
+            for (const socket of roomSockets) {
+              socket.send(JSON.stringify(message));
+            }
           }
         }
       },

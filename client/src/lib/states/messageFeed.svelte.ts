@@ -1,6 +1,7 @@
 import { SvelteDate } from 'svelte/reactivity';
 
 import { PUBLIC_API_URL } from '$env/static/public';
+import { useAuthState } from './authState.svelte';
 
 interface MessageFeed {
 	id: number;
@@ -23,6 +24,15 @@ const reconnect = (roomName: string) => {
 
 const openConnection = async (roomName: string) => {
 	connection = new WebSocket(`${PUBLIC_API_URL}/room/${roomName}/ws`);
+
+	connection.onopen = () => {
+		// Authenticate the connection if a token is available
+		const authState = useAuthState();
+
+		if (authState.token !== '') {
+			connection.send(JSON.stringify({ type: 'auth', token: authState.token }));
+		}
+	};
 
 	connection.onmessage = (event) => {
 		// Parse incoming message
