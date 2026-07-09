@@ -5,11 +5,12 @@ https://www.skeleton.dev/docs/svelte/guides/cookbook/chat
 
 <script lang="ts">
 	import { onMount } from 'svelte';
-    import { page } from '$app/state';
+	import { page } from '$app/state';
 
-	import { openConnection } from '$lib/states/messageFeed.svelte';
+	import { openConnection } from '$lib/states/roomSocket.svelte';
 	import Conversation from '$lib/components/room/Conversation.svelte';
 	import MessagePrompt from '$lib/components/room/MessagePrompt.svelte';
+	import PresenceList from '$lib/components/room/PresenceList.svelte';
 
 	// When DOM is mounted, establish WebSocket connection
 	onMount(() => {
@@ -26,19 +27,22 @@ https://www.skeleton.dev/docs/svelte/guides/cookbook/chat
 			<!-- Header -->
 			<header class="border-b border-surface-200-800 p-4">
 				<p>
-                    <b class="font-bold">Room: </b>
-                    <span>{page.params.roomName}</span>
-                </p>
+					<b class="font-bold">Room: </b>
+					<span>{page.params.roomName}</span>
+				</p>
 			</header>
-            <!-- Presence -->
-            <div class="p-4 space-y-4 overflow-y-auto">
-                <p>Presence list will go here</p>
-            </div>
+			<!-- Presence -->
+			<div class="p-4 space-y-4 overflow-y-auto">
+				<p class="font-bold">Users in this room:</p>
+				<PresenceList />
+			</div>
 		</div>
 		<!-- Chat -->
 		<div class="grid grid-rows-[1fr_auto]">
 			<Conversation />
-			<MessagePrompt />
+			<section class="border-t border-surface-200-800 p-4">
+				<MessagePrompt />
+			</section>
 		</div>
 	</div>
 </section>
