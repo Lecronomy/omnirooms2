@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { CircleUserIcon, MenuIcon } from '@lucide/svelte';
+	import { CircleUserIcon } from '@lucide/svelte';
 	import { AppBar } from '@skeletonlabs/skeleton-svelte';
 
 	import { useAuthState } from '$lib/states/authState.svelte';
@@ -9,9 +9,6 @@
 <!-- TODO: Proper header design and functionality. This is just a placeholder for now. -->
 <AppBar>
 	<AppBar.Toolbar class="grid-cols-[auto_1fr_auto]">
-		<AppBar.Lead>
-			<button type="button" class="btn-icon btn-icon-lg hover:preset-tonal"><MenuIcon /></button>
-		</AppBar.Lead>
 		<AppBar.Headline>
 			<p class="text-2xl">Omnirooms</p>
 		</AppBar.Headline>
