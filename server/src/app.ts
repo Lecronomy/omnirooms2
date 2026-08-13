@@ -4,6 +4,7 @@ import { cors } from "hono/cors";
 import { authRouter } from "./services/auth/routes.ts";
 import { roomRouter } from "./services/room/routes.ts";
 import { usersRouter } from "./services/users/routes.ts";
+import { postsRouter } from "./services/posts/routes.ts";
 
 const app = new Hono().basePath("/api");
 
@@ -19,5 +20,6 @@ app.get("/health", (c) => {
 app.route("/auth", authRouter);
 app.route("/room", roomRouter);
 app.route("/users", usersRouter);
+app.route("/posts", postsRouter);
 
 export default app;
