@@ -70,12 +70,7 @@ export const openConnection = async (roomName: string) => {
 
 				// Turn timestamp into string
 				const date: SvelteDate = new SvelteDate(data.date);
-				// TODO: This is currently hardcoded to en-US, change to use user's locale
-				const timestampString = date.toLocaleString('en-US', {
-					hour: 'numeric',
-					minute: 'numeric',
-					hour12: true
-				});
+				const timestampString = date.toLocaleString();
 				const newMessage = {
 					id: messageFeed.length,
 					user: data.user,
