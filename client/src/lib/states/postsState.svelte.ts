@@ -14,22 +14,29 @@ interface Post {
 let posts: Post[] = $state([]);
 let loading: boolean = $state(false);
 
-// Tentative validation function to get Post objects from API responses. Could probably be replaced with Zod.
 interface PostResponse {
 	id: number;
 	content: string;
 	created_at: string; // ISO 8601 date string
 }
+
+// Convert PostResponse to Post by transforming the created_at string to a SvelteDate object
+const transformPostResponse = (postResponse: PostResponse): Post => {
+	return {
+		id: postResponse.id,
+		content: postResponse.content,
+		createdAt: new SvelteDate(postResponse.created_at)
+	};
+};
+
+// Tentative validation function to get Post objects from API responses. Could probably be replaced with Zod.
 const getPostsFromResponse = async (response: Response): Promise<Post[]> => {
 	if (!response.ok) {
 		throw new Error('Failed to fetch posts');
 	}
 
 	const data = await response.json();
-	return data.map((post: PostResponse) => ({
-		...post,
-		createdAt: new SvelteDate(post.created_at)
-	}));
+	return data.map(transformPostResponse);
 };
 
 export const usePostsState = () => {
@@ -76,7 +83,8 @@ export const usePostsState = () => {
 			loading = true;
 			const response = await postsApi.createPost(token, { content });
 			if (response.ok) {
-				const newPost = await response.json();
+				const newPostResponse = await response.json();
+				const newPost = transformPostResponse(newPostResponse);
 				posts = [newPost, ...posts];
 			} else {
 				console.error('Failed to create post');
