@@ -3,14 +3,15 @@
 
 	import { usePostsState } from '$lib/states/postsState.svelte';
 	import { useAuthState } from '$lib/states/authState.svelte';
+	import MessageBubble from '../MessageBubble.svelte';
 
-	let { username = null as string | null } = $props();
+	let { username = '' } = $props();
 
 	const postsState = usePostsState();
 	const authState = useAuthState();
 
 	$effect(() => {
-		if (username) {
+		if (username !== '') {
 			postsState.fetchUserPosts(username);
 		} else {
 			username = authState.user?.username ?? 'Unknown user';
@@ -32,10 +33,12 @@
 		<Progress.ValueText />
 	</Progress>
 {:else}
-	{#each postsState.posts as post (post.id)}
-		<div class="card w-full max-w-md preset-filled-surface-100-900 p-4">
-			<p>{post.content}</p>
-			<small>Posted on {post.createdAt.toLocaleString()}</small>
-		</div>
-	{/each}
+	<!-- Max height should probably be dynamic instead of hardcoded -->
+	<section class="max-h-75 p-4 overflow-y-auto space-y-4">
+		{#each postsState.posts as post (post.id)}
+			<MessageBubble {username} timestamp={post.createdAt.toLocaleString()}>
+				{post.content}
+			</MessageBubble>
+		{/each}
+	</section>
 {/if}
